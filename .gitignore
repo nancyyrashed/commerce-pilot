@@ -1,0 +1,25 @@
+# Python virtual environment
+.venv/
+
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local secrets (keep the example configuration trackable)
+.env
+.env.*
+!.env.example
+
+# Local datasets and generated databases
+data/*
+!data/.gitkeep
+
+# Local logs
+logs/
+*.log
+
+# Test coverage output
+.coverage
+htmlcov/

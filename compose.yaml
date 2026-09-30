@@ -1,0 +1,30 @@
+services:
+  db:
+    # Use the official PostgreSQL 17 image
+    image: postgres:17
+
+    environment:
+      # Read these settings from your private .env file
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+
+    ports:
+      # Allow connections from your laptop only
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      # Preserve database files when the container is recreated
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      # Check whether PostgreSQL is accepting connections
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  # Docker manages this persistent storage
+  postgres_data:
