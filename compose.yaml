@@ -19,11 +19,47 @@ services:
 
     healthcheck:
       # Check whether PostgreSQL is accepting connections
-      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
+
+
+  app:
+    # Build CommercePilot from the production Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: commercepilot:local
+
+    environment:
+      # Inside Docker, PostgreSQL is reached through the
+      # Compose service name "db", not 127.0.0.1.
+      DATABASE_URL: >-
+        host=db
+        port=5432
+        dbname=${POSTGRES_DB}
+        user=${POSTGRES_READONLY_USER}
+        password=${POSTGRES_READONLY_PASSWORD}
+
+      GROQ_API_KEY: ${GROQ_API_KEY:?Set GROQ_API_KEY in .env}
+      GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-20b}
+
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    restart: unless-stopped
+
 
 volumes:
   # Docker manages this persistent storage

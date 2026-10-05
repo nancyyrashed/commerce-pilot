@@ -1,0 +1,139 @@
+{
+  "simple_01": {
+    "sql": "SELECT COUNT(*) AS order_count FROM orders;"
+  },
+  "simple_02": {
+    "sql": "SELECT COUNT(*) AS delivered_order_count FROM orders WHERE order_status = 'delivered';"
+  },
+  "simple_03": {
+    "sql": "SELECT COUNT(*) AS canceled_order_count FROM orders WHERE order_status = 'canceled';"
+  },
+  "simple_04": {
+    "sql": "SELECT MIN(order_purchase_timestamp) AS earliest_purchase FROM orders;"
+  },
+  "simple_05": {
+    "sql": "SELECT MAX(order_purchase_timestamp) AS latest_purchase FROM orders;"
+  },
+  "simple_06": {
+    "sql": "SELECT COUNT(DISTINCT customer_unique_id) AS unique_customer_count FROM customers;"
+  },
+  "simple_07": {
+    "sql": "SELECT COUNT(*) AS seller_count FROM sellers;"
+  },
+  "simple_08": {
+    "sql": "SELECT COUNT(*) AS product_count FROM products;"
+  },
+  "simple_09": {
+    "sql": "SELECT AVG(review_score) AS average_review_score FROM order_reviews;"
+  },
+  "simple_10": {
+    "sql": "SELECT COUNT(*) AS five_star_review_count FROM order_reviews WHERE review_score = 5;"
+  },
+  "simple_11": {
+    "sql": "SELECT payment_type, COUNT(*) AS payment_record_count FROM order_payments GROUP BY payment_type ORDER BY payment_type;"
+  },
+  "simple_12": {
+    "sql": "SELECT AVG(payment_installments) AS average_installments FROM order_payments;"
+  },
+  "simple_13": {
+    "sql": "SELECT MAX(payment_installments) AS maximum_installments FROM order_payments;"
+  },
+  "simple_14": {
+    "sql": "SELECT COUNT(*) AS order_count FROM orders WHERE order_purchase_timestamp >= '2017-01-01' AND order_purchase_timestamp < '2018-01-01';"
+  },
+  "simple_15": {
+    "sql": "SELECT COUNT(*) AS order_count FROM orders WHERE order_purchase_timestamp >= '2018-01-01' AND order_purchase_timestamp < '2019-01-01';"
+  },
+  "simple_16": {
+    "sql": "SELECT AVG(freight_value) AS average_freight_value FROM order_items;"
+  },
+  "simple_17": {
+    "sql": "SELECT AVG(price) AS average_item_price FROM order_items;"
+  },
+  "simple_18": {
+    "sql": "SELECT COUNT(DISTINCT product_category_name) AS category_count FROM products;"
+  },
+  "simple_19": {
+    "sql": "SELECT order_status, COUNT(*) AS order_count FROM orders GROUP BY order_status ORDER BY order_count DESC LIMIT 1;"
+  },
+  "simple_20": {
+    "sql": "SELECT COUNT(DISTINCT customer_state) AS state_count FROM customers;"
+  },
+
+  "joins_01": {
+    "sql": "SELECT COALESCE(t.product_category_name_english, p.product_category_name) AS category, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation t ON p.product_category_name = t.product_category_name WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY COALESCE(t.product_category_name_english, p.product_category_name) ORDER BY sales_value DESC LIMIT 5;"
+  },
+  "joins_02": {
+    "sql": "SELECT s.seller_state, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN sellers s ON oi.seller_id = s.seller_id WHERE o.order_status = 'delivered' GROUP BY s.seller_state ORDER BY sales_value DESC LIMIT 5;"
+  },
+  "joins_03": {
+    "sql": "SELECT c.customer_state, SUM(oi.price) AS sales_value FROM orders o JOIN customers c ON o.customer_id = c.customer_id JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY c.customer_state ORDER BY c.customer_state;"
+  },
+  "joins_04": {
+    "sql": "SELECT oi.seller_id, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id ORDER BY sales_value DESC LIMIT 10;"
+  },
+  "joins_05": {
+    "sql": "SELECT COALESCE(t.product_category_name_english, p.product_category_name) AS category, AVG(oi.freight_value) AS average_freight_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation t ON p.product_category_name = t.product_category_name WHERE o.order_status = 'delivered' GROUP BY COALESCE(t.product_category_name_english, p.product_category_name) ORDER BY category;"
+  },
+  "joins_06": {
+    "sql": "SELECT op.payment_type, SUM(op.payment_value) AS total_payment_value FROM orders o JOIN order_payments op ON o.order_id = op.order_id WHERE o.order_status = 'delivered' GROUP BY op.payment_type ORDER BY op.payment_type;"
+  },
+  "joins_07": {
+    "sql": "SELECT s.seller_state, AVG(oi.price) AS average_item_price FROM order_items oi JOIN sellers s ON oi.seller_id = s.seller_id GROUP BY s.seller_state ORDER BY s.seller_state;"
+  },
+  "joins_08": {
+    "sql": "SELECT c.customer_state, COUNT(DISTINCT o.order_id) AS delivered_order_count FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' GROUP BY c.customer_state ORDER BY c.customer_state;"
+  },
+  "joins_09": {
+    "sql": "SELECT DATE_TRUNC('month', o.order_purchase_timestamp) AS month, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY DATE_TRUNC('month', o.order_purchase_timestamp) ORDER BY month;"
+  },
+  "joins_10": {
+    "sql": "SELECT COALESCE(t.product_category_name_english, p.product_category_name) AS category, COUNT(*) AS items_sold FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation t ON p.product_category_name = t.product_category_name WHERE o.order_status = 'delivered' GROUP BY COALESCE(t.product_category_name_english, p.product_category_name) ORDER BY items_sold DESC LIMIT 5;"
+  },
+  "joins_11": {
+    "sql": "SELECT c.customer_city, COUNT(DISTINCT o.order_id) AS delivered_order_count FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' GROUP BY c.customer_city ORDER BY delivered_order_count DESC LIMIT 5;"
+  },
+  "joins_12": {
+    "sql": "SELECT o.order_status, AVG(r.review_score) AS average_review_score FROM orders o JOIN order_reviews r ON o.order_id = r.order_id GROUP BY o.order_status ORDER BY o.order_status;"
+  },
+  "joins_13": {
+    "sql": "SELECT oi.seller_id, COUNT(DISTINCT oi.order_id) AS delivered_order_count FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id ORDER BY delivered_order_count DESC LIMIT 5;"
+  },
+  "joins_14": {
+    "sql": "SELECT c.customer_state, AVG(op.payment_installments) AS average_installments FROM orders o JOIN customers c ON o.customer_id = c.customer_id JOIN order_payments op ON o.order_id = op.order_id WHERE o.order_status = 'delivered' GROUP BY c.customer_state ORDER BY c.customer_state;"
+  },
+  "joins_15": {
+    "sql": "SELECT c.customer_state, AVG(EXTRACT(EPOCH FROM (o.order_delivered_customer_date - o.order_purchase_timestamp)) / 86400.0) AS average_delivery_days FROM orders o JOIN customers c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' AND o.order_delivered_customer_date IS NOT NULL GROUP BY c.customer_state ORDER BY c.customer_state;"
+  },
+
+  "multi_01": {
+    "sql": "WITH customer_orders AS (SELECT c.customer_unique_id, COUNT(DISTINCT o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_unique_id) SELECT COUNT(*) AS repeat_customer_count FROM customer_orders WHERE order_count > 1;"
+  },
+  "multi_02": {
+    "sql": "WITH customer_orders AS (SELECT c.customer_unique_id, COUNT(DISTINCT o.order_id) AS order_count FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_unique_id) SELECT 100.0 * COUNT(*) FILTER (WHERE order_count > 1) / NULLIF(COUNT(*), 0) AS repeat_customer_percentage FROM customer_orders;"
+  },
+  "multi_03": {
+    "sql": "WITH repeat_customers AS (SELECT c.customer_unique_id FROM customers c JOIN orders o ON c.customer_id = o.customer_id GROUP BY c.customer_unique_id HAVING COUNT(DISTINCT o.order_id) > 1) SELECT c.customer_unique_id, SUM(oi.price) AS sales_value FROM repeat_customers rc JOIN customers c ON rc.customer_unique_id = c.customer_unique_id JOIN orders o ON c.customer_id = o.customer_id JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY c.customer_unique_id ORDER BY sales_value DESC LIMIT 5;"
+  },
+  "multi_04": {
+    "sql": "WITH monthly_sales AS (SELECT DATE_TRUNC('month', o.order_purchase_timestamp) AS month, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY DATE_TRUNC('month', o.order_purchase_timestamp)), with_previous AS (SELECT month, sales_value, LAG(sales_value) OVER (ORDER BY month) AS previous_sales_value FROM monthly_sales) SELECT month, sales_value, 100.0 * (sales_value - previous_sales_value) / NULLIF(previous_sales_value, 0) AS month_over_month_growth_pct FROM with_previous ORDER BY month;"
+  },
+  "multi_05": {
+    "sql": "WITH order_sales AS (SELECT o.order_id, DATE_TRUNC('month', o.order_purchase_timestamp) AS month, SUM(oi.price) AS order_sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY o.order_id, DATE_TRUNC('month', o.order_purchase_timestamp)) SELECT month, AVG(order_sales_value) AS average_order_sales_value FROM order_sales GROUP BY month ORDER BY month;"
+  },
+  "multi_06": {
+    "sql": "WITH category_sales AS (SELECT COALESCE(t.product_category_name_english, p.product_category_name) AS category, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation t ON p.product_category_name = t.product_category_name WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY COALESCE(t.product_category_name_english, p.product_category_name)), ranked AS (SELECT category, sales_value, ROW_NUMBER() OVER (ORDER BY sales_value DESC) AS rank FROM category_sales), totals AS (SELECT SUM(sales_value) AS total_sales_value FROM category_sales) SELECT 100.0 * SUM(r.sales_value) / NULLIF(t.total_sales_value, 0) AS top_5_sales_share_pct FROM ranked r CROSS JOIN totals t WHERE r.rank <= 5 GROUP BY t.total_sales_value;"
+  },
+  "multi_07": {
+    "sql": "SELECT 100.0 * COUNT(*) FILTER (WHERE order_delivered_customer_date > order_estimated_delivery_date) / NULLIF(COUNT(*), 0) AS late_delivery_percentage FROM orders WHERE order_status = 'delivered' AND order_purchase_timestamp >= '2018-01-01' AND order_purchase_timestamp < '2019-01-01' AND order_delivered_customer_date IS NOT NULL AND order_estimated_delivery_date IS NOT NULL;"
+  },
+  "multi_08": {
+    "sql": "SELECT CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 'late' ELSE 'on_time' END AS delivery_group, AVG(r.review_score) AS average_review_score FROM orders o JOIN order_reviews r ON o.order_id = r.order_id WHERE o.order_status = 'delivered' AND o.order_delivered_customer_date IS NOT NULL AND o.order_estimated_delivery_date IS NOT NULL GROUP BY CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 'late' ELSE 'on_time' END ORDER BY delivery_group;"
+  },
+  "multi_09": {
+    "sql": "WITH seller_sales AS (SELECT oi.seller_id, SUM(oi.price) AS sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id), total_sales AS (SELECT SUM(sales_value) AS total_sales_value FROM seller_sales) SELECT ss.seller_id, 100.0 * ss.sales_value / NULLIF(ts.total_sales_value, 0) AS sales_share_pct FROM seller_sales ss CROSS JOIN total_sales ts ORDER BY ss.sales_value DESC LIMIT 5;"
+  },
+  "multi_10": {
+    "sql": "WITH order_category_sales AS (SELECT o.order_id, COALESCE(t.product_category_name_english, p.product_category_name) AS category, SUM(oi.price) AS order_category_sales_value FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation t ON p.product_category_name = t.product_category_name WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY o.order_id, COALESCE(t.product_category_name_english, p.product_category_name)), category_averages AS (SELECT category, AVG(order_category_sales_value) AS average_order_sales_value FROM order_category_sales GROUP BY category) SELECT category, average_order_sales_value FROM category_averages ORDER BY average_order_sales_value DESC LIMIT 1;"
+  }
+}

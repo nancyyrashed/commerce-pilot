@@ -1,0 +1,1038 @@
+{
+  "summary": {
+    "total_cases": 45,
+    "scored_cases": 45,
+    "passed": 45,
+    "failed": 0,
+    "infrastructure_errors": 0,
+    "execution_accuracy": 1.0
+  },
+  "source_batches": [
+    "answerable_batch_01.json",
+    "answerable_batch_02.json",
+    "answerable_batch_03.json",
+    "answerable_batch_04.json",
+    "answerable_batch_05.json"
+  ],
+  "results": [
+    {
+      "id": "simple_01",
+      "category": "simple",
+      "question": "How many orders are in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS total_orders FROM orders LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_02",
+      "category": "simple",
+      "question": "How many orders were delivered?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS delivered_orders FROM orders WHERE order_status = 'delivered' LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_03",
+      "category": "simple",
+      "question": "How many orders were canceled?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS canceled_orders FROM orders WHERE order_status = 'canceled' LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_04",
+      "category": "simple",
+      "question": "What is the earliest order purchase date in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT MIN(order_purchase_timestamp) AS earliest_purchase_date FROM orders LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_05",
+      "category": "simple",
+      "question": "What is the latest order purchase date in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT MAX(order_purchase_timestamp) AS latest_purchase_date FROM orders LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_06",
+      "category": "simple",
+      "question": "How many unique customers are in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(DISTINCT customer_unique_id) AS unique_customer_count FROM customers LIMIT 100",
+      "tables_used": [
+        "customers"
+      ],
+      "expected_tables": [
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_07",
+      "category": "simple",
+      "question": "How many sellers are in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS seller_count FROM sellers LIMIT 100",
+      "tables_used": [
+        "sellers"
+      ],
+      "expected_tables": [
+        "sellers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_08",
+      "category": "simple",
+      "question": "How many products are in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS product_count FROM products LIMIT 100",
+      "tables_used": [
+        "products"
+      ],
+      "expected_tables": [
+        "products"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_09",
+      "category": "simple",
+      "question": "What is the average review score?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT AVG(review_score) AS avg_review_score FROM order_reviews LIMIT 100",
+      "tables_used": [
+        "order_reviews"
+      ],
+      "expected_tables": [
+        "order_reviews"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_10",
+      "category": "simple",
+      "question": "How many reviews have a score of 5?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS five_star_reviews FROM order_reviews WHERE review_score = 5 LIMIT 100",
+      "tables_used": [
+        "order_reviews"
+      ],
+      "expected_tables": [
+        "order_reviews"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_11",
+      "category": "simple",
+      "question": "How many payment records are there for each payment type?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT payment_type, COUNT(*) AS payment_count FROM order_payments GROUP BY payment_type LIMIT 100",
+      "tables_used": [
+        "order_payments"
+      ],
+      "expected_tables": [
+        "order_payments"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "simple_12",
+      "category": "simple",
+      "question": "What is the average number of payment installments?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT AVG(payment_installments) AS avg_payment_installments FROM order_payments LIMIT 100",
+      "tables_used": [
+        "order_payments"
+      ],
+      "expected_tables": [
+        "order_payments"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_13",
+      "category": "simple",
+      "question": "What is the maximum number of payment installments used?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT MAX(payment_installments) AS max_installments FROM order_payments LIMIT 100",
+      "tables_used": [
+        "order_payments"
+      ],
+      "expected_tables": [
+        "order_payments"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_14",
+      "category": "simple",
+      "question": "How many orders were purchased in 2017?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders WHERE order_purchase_timestamp >= '2017-01-01' AND order_purchase_timestamp < '2018-01-01' LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_15",
+      "category": "simple",
+      "question": "How many orders were purchased in 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS order_count FROM orders WHERE order_purchase_timestamp >= '2018-01-01' AND order_purchase_timestamp < '2019-01-01' LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_16",
+      "category": "simple",
+      "question": "What is the average freight value per order item?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT AVG(freight_value) AS avg_freight_value_per_item FROM order_items LIMIT 100",
+      "tables_used": [
+        "order_items"
+      ],
+      "expected_tables": [
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_17",
+      "category": "simple",
+      "question": "What is the average item price?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT AVG(price) AS average_item_price FROM order_items LIMIT 100",
+      "tables_used": [
+        "order_items"
+      ],
+      "expected_tables": [
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_18",
+      "category": "simple",
+      "question": "How many distinct product categories are present in the products table?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(DISTINCT product_category_name) AS distinct_categories FROM products LIMIT 100",
+      "tables_used": [
+        "products"
+      ],
+      "expected_tables": [
+        "products"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_19",
+      "category": "simple",
+      "question": "Which order status is the most common?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT order_status, COUNT(*) AS order_count FROM orders GROUP BY order_status ORDER BY order_count DESC LIMIT 1",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "simple_20",
+      "category": "simple",
+      "question": "How many distinct customer states are represented in the dataset?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(DISTINCT customer_state) AS distinct_customer_states FROM customers LIMIT 100",
+      "tables_used": [
+        "customers"
+      ],
+      "expected_tables": [
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "joins_01",
+      "category": "joins_aggregations",
+      "question": "What were the top 5 product categories by sales value in 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COALESCE(pct.product_category_name_english, p.product_category_name) AS category, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation AS pct ON p.product_category_name = pct.product_category_name WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY COALESCE(pct.product_category_name_english, p.product_category_name) ORDER BY sales_value DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "joins_02",
+      "category": "joins_aggregations",
+      "question": "What were the top 5 seller states by sales value across delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT s.seller_state, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN sellers AS s ON oi.seller_id = s.seller_id WHERE o.order_status = 'delivered' GROUP BY s.seller_state ORDER BY sales_value DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "order_items",
+        "sellers"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "sellers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "joins_03",
+      "category": "joins_aggregations",
+      "question": "What was the sales value by customer state in 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT c.customer_state, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN customers AS c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY c.customer_state ORDER BY sales_value DESC LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_items",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 27,
+      "generated_row_count": 27,
+      "error": null
+    },
+    {
+      "id": "joins_04",
+      "category": "joins_aggregations",
+      "question": "Who were the top 10 sellers by sales value for delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT oi.seller_id, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id ORDER BY sales_value DESC LIMIT 10",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 10,
+      "generated_row_count": 10,
+      "error": null
+    },
+    {
+      "id": "joins_05",
+      "category": "joins_aggregations",
+      "question": "What was the average freight value by product category for delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COALESCE(pct.product_category_name_english, p.product_category_name) AS product_category, AVG(oi.freight_value) AS avg_freight_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation AS pct ON p.product_category_name = pct.product_category_name WHERE o.order_status = 'delivered' GROUP BY product_category ORDER BY avg_freight_value DESC LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 74,
+      "generated_row_count": 74,
+      "error": null
+    },
+    {
+      "id": "joins_06",
+      "category": "joins_aggregations",
+      "question": "What was the total payment value by payment type for delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT op.payment_type, SUM(op.payment_value) AS total_payment_value FROM orders AS o JOIN order_payments AS op ON o.order_id = op.order_id WHERE o.order_status = 'delivered' GROUP BY op.payment_type LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_payments"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_payments"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 4,
+      "generated_row_count": 4,
+      "error": null
+    },
+    {
+      "id": "joins_07",
+      "category": "joins_aggregations",
+      "question": "What was the average item price by seller state?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT s.seller_state, AVG(oi.price) AS avg_item_price FROM order_items AS oi JOIN sellers AS s ON oi.seller_id = s.seller_id GROUP BY s.seller_state ORDER BY s.seller_state LIMIT 100",
+      "tables_used": [
+        "order_items",
+        "sellers"
+      ],
+      "expected_tables": [
+        "order_items",
+        "sellers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 23,
+      "generated_row_count": 23,
+      "error": null
+    },
+    {
+      "id": "joins_08",
+      "category": "joins_aggregations",
+      "question": "How many delivered orders came from each customer state?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT c.customer_state, COUNT(*) AS delivered_orders FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' GROUP BY c.customer_state ORDER BY delivered_orders DESC LIMIT 100",
+      "tables_used": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 27,
+      "generated_row_count": 27,
+      "error": null
+    },
+    {
+      "id": "joins_09",
+      "category": "joins_aggregations",
+      "question": "What was the monthly sales value during 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT DATE_TRUNC('MONTH', o.order_purchase_timestamp) AS month, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY month ORDER BY month LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 8,
+      "generated_row_count": 8,
+      "error": null
+    },
+    {
+      "id": "joins_10",
+      "category": "joins_aggregations",
+      "question": "What were the top 5 product categories by number of items sold in delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COALESCE(pct.product_category_name_english, p.product_category_name) AS category, COUNT(*) AS items_sold FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.product_id LEFT JOIN product_category_name_translation AS pct ON p.product_category_name = pct.product_category_name WHERE o.order_status = 'delivered' GROUP BY 1 ORDER BY items_sold DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "joins_11",
+      "category": "joins_aggregations",
+      "question": "Which 5 customer cities had the most delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT c.customer_city, COUNT(*) AS delivered_orders FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' GROUP BY c.customer_city ORDER BY delivered_orders DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "joins_12",
+      "category": "joins_aggregations",
+      "question": "What was the average review score for each order status?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT o.order_status, AVG(r.review_score) AS avg_review_score FROM orders AS o JOIN order_reviews AS r ON o.order_id = r.order_id GROUP BY o.order_status ORDER BY o.order_status LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_reviews"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_reviews"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 8,
+      "generated_row_count": 8,
+      "error": null
+    },
+    {
+      "id": "joins_13",
+      "category": "joins_aggregations",
+      "question": "Which 5 sellers handled the most distinct delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT oi.seller_id, COUNT(DISTINCT o.order_id) AS delivered_orders FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id ORDER BY delivered_orders DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "joins_14",
+      "category": "joins_aggregations",
+      "question": "What was the average number of payment installments by customer state for delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT c.customer_state AS state, AVG(op.payment_installments) AS avg_installments FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id JOIN order_payments AS op ON o.order_id = op.order_id WHERE o.order_status = 'delivered' GROUP BY c.customer_state ORDER BY avg_installments DESC LIMIT 100",
+      "tables_used": [
+        "orders",
+        "customers",
+        "order_payments"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers",
+        "order_payments"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 27,
+      "generated_row_count": 27,
+      "error": null
+    },
+    {
+      "id": "joins_15",
+      "category": "joins_aggregations",
+      "question": "What was the average delivery time in days by customer state for delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT c.customer_state, AVG(EXTRACT(EPOCH FROM (o.order_delivered_customer_date - o.order_purchase_timestamp)) / 86400) AS avg_delivery_time_days FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id WHERE o.order_status = 'delivered' AND o.order_delivered_customer_date IS NOT NULL AND o.order_purchase_timestamp IS NOT NULL GROUP BY c.customer_state ORDER BY c.customer_state LIMIT 100",
+      "tables_used": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 27,
+      "generated_row_count": 27,
+      "error": null
+    },
+    {
+      "id": "multi_01",
+      "category": "multi_step",
+      "question": "How many customers placed more than one order?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT COUNT(*) AS repeat_customer_count FROM (SELECT c.customer_unique_id FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id GROUP BY c.customer_unique_id HAVING COUNT(*) > 1) AS t LIMIT 100",
+      "tables_used": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "multi_02",
+      "category": "multi_step",
+      "question": "What percentage of customers placed more than one order?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "WITH orders_per_customer AS (SELECT c.customer_unique_id, COUNT(*) AS order_count FROM orders AS o JOIN customers AS c ON o.customer_id = c.customer_id GROUP BY c.customer_unique_id), stats AS (SELECT COUNT(*) FILTER(WHERE order_count > 1) AS repeat_customers, COUNT(*) AS total_customers FROM orders_per_customer) SELECT 100.0 * repeat_customers / total_customers AS repeat_percentage FROM stats LIMIT 100",
+      "tables_used": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "multi_03",
+      "category": "multi_step",
+      "question": "Who were the top 5 repeat customers by total sales value?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 3,
+      "generated_sql": "WITH customer_orders AS (SELECT c.customer_unique_id, o.order_id, o.order_status FROM orders AS o JOIN customers AS c ON c.customer_id = o.customer_id), repeat_customers AS (SELECT customer_unique_id FROM customer_orders GROUP BY customer_unique_id HAVING COUNT(*) > 1) SELECT rc.customer_unique_id, SUM(oi.price) AS total_sales_value FROM repeat_customers AS rc JOIN customer_orders AS co ON co.customer_unique_id = rc.customer_unique_id JOIN order_items AS oi ON oi.order_id = co.order_id WHERE co.order_status = 'delivered' GROUP BY rc.customer_unique_id ORDER BY total_sales_value DESC LIMIT 5",
+      "tables_used": [
+        "order_items",
+        "orders",
+        "customers"
+      ],
+      "expected_tables": [
+        "orders",
+        "customers",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "multi_04",
+      "category": "multi_step",
+      "question": "What was the month-over-month sales value growth rate during 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "WITH monthly_sales AS (SELECT DATE_TRUNC('MONTH', o.order_purchase_timestamp) AS month, SUM(oi.price) AS sales FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY month) SELECT month, sales, ROUND(100 * (sales - LAG(sales) OVER (ORDER BY month)) / NULLIF(LAG(sales) OVER (ORDER BY month), 0), 2) AS growth_rate_percent FROM monthly_sales ORDER BY month LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 8,
+      "generated_row_count": 8,
+      "error": null
+    },
+    {
+      "id": "multi_05",
+      "category": "multi_step",
+      "question": "What was the average order sales value for each month of 2018?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "WITH order_totals AS (SELECT o.order_id, DATE_TRUNC('MONTH', o.order_purchase_timestamp) AS month, SUM(oi.price) AS total FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY o.order_id, month) SELECT month, AVG(total) AS avg_order_sales_value FROM order_totals GROUP BY month ORDER BY month LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 8,
+      "generated_row_count": 8,
+      "error": null
+    },
+    {
+      "id": "multi_06",
+      "category": "multi_step",
+      "question": "What percentage of 2018 sales value came from the top 5 product categories?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "WITH category_sales AS (SELECT p.product_category_name, SUM(oi.price) AS sales FROM order_items AS oi JOIN orders AS o ON oi.order_id = o.order_id JOIN products AS p ON oi.product_id = p.product_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY p.product_category_name), top5 AS (SELECT sales FROM category_sales ORDER BY sales DESC LIMIT 5), total_sales AS (SELECT SUM(sales) AS total FROM category_sales) SELECT ROUND(100.0 * (SELECT SUM(sales) FROM top5) / (SELECT total FROM total_sales), 2) AS pct_top5 LIMIT 100",
+      "tables_used": [
+        "order_items",
+        "orders",
+        "products"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "products"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "multi_07",
+      "category": "multi_step",
+      "question": "What percentage of delivered orders in 2018 arrived later than their estimated delivery date?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT ROUND(CAST(100.0 * SUM(CASE WHEN order_delivered_customer_date > order_estimated_delivery_date THEN 1 ELSE 0 END) / COUNT(*) AS DECIMAL), 2) AS late_percentage FROM orders WHERE order_status = 'delivered' AND order_purchase_timestamp >= '2018-01-01' AND order_purchase_timestamp < '2019-01-01' LIMIT 100",
+      "tables_used": [
+        "orders"
+      ],
+      "expected_tables": [
+        "orders"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    },
+    {
+      "id": "multi_08",
+      "category": "multi_step",
+      "question": "How did the average review score compare between late and on-time delivered orders?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "SELECT CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 'late' ELSE 'on-time' END AS delivery_status, AVG(r.review_score) AS avg_review_score FROM orders AS o JOIN order_reviews AS r ON o.order_id = r.order_id WHERE o.order_delivered_customer_date IS NOT NULL AND o.order_estimated_delivery_date IS NOT NULL GROUP BY CASE WHEN o.order_delivered_customer_date > o.order_estimated_delivery_date THEN 'late' ELSE 'on-time' END ORDER BY delivery_status LIMIT 100",
+      "tables_used": [
+        "orders",
+        "order_reviews"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_reviews"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 2,
+      "generated_row_count": 2,
+      "error": null
+    },
+    {
+      "id": "multi_09",
+      "category": "multi_step",
+      "question": "What percentage of total delivered sales value did each of the top 5 sellers contribute?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 1,
+      "generated_sql": "WITH seller_sales AS (SELECT oi.seller_id, SUM(oi.price) AS sales_value FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id WHERE o.order_status = 'delivered' GROUP BY oi.seller_id), total_sales AS (SELECT SUM(sales_value) AS total_value FROM seller_sales) SELECT ss.seller_id, ss.sales_value, (ss.sales_value / ts.total_value) * 100 AS percentage_of_total FROM seller_sales AS ss CROSS JOIN total_sales AS ts ORDER BY ss.sales_value DESC LIMIT 5",
+      "tables_used": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 5,
+      "generated_row_count": 5,
+      "error": null
+    },
+    {
+      "id": "multi_10",
+      "category": "multi_step",
+      "question": "For each product category in 2018, calculate that category's sales value within each delivered order, then average those order-category sales values. Which category had the highest average?",
+      "correct": true,
+      "scored": true,
+      "infrastructure_error": false,
+      "execution_succeeded": true,
+      "attempts": 2,
+      "generated_sql": "WITH per_order_cat AS (SELECT o.order_id, p.product_category_name, SUM(oi.price) AS cat_sales FROM orders AS o JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.product_id WHERE o.order_status = 'delivered' AND o.order_purchase_timestamp >= '2018-01-01' AND o.order_purchase_timestamp < '2019-01-01' GROUP BY o.order_id, p.product_category_name), cat_avg AS (SELECT poc.product_category_name, AVG(poc.cat_sales) AS avg_sales FROM per_order_cat AS poc GROUP BY poc.product_category_name) SELECT COALESCE(pt.product_category_name_english, ca.product_category_name) AS category, ca.avg_sales FROM cat_avg AS ca LEFT JOIN product_category_name_translation AS pt ON ca.product_category_name = pt.product_category_name ORDER BY ca.avg_sales DESC LIMIT 1",
+      "tables_used": [
+        "product_category_name_translation",
+        "orders",
+        "order_items",
+        "products"
+      ],
+      "expected_tables": [
+        "orders",
+        "order_items",
+        "products",
+        "product_category_name_translation"
+      ],
+      "expected_tables_used": true,
+      "reference_row_count": 1,
+      "generated_row_count": 1,
+      "error": null
+    }
+  ]
+}
