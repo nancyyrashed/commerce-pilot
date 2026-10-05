@@ -19,6 +19,25 @@ jobs:
     name: Test and Build
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17
+
+        env:
+          POSTGRES_DB: commercepilot
+          POSTGRES_USER: commercepilot_admin
+          POSTGRES_PASSWORD: ci_admin_password
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd="pg_isready -U commercepilot_admin -d commercepilot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+
     steps:
       # ---------------------------------------------------------
       # Repository
@@ -43,7 +62,40 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Create CI database schema
+        env:
+          PGPASSWORD: ci_admin_password
+        run: |
+          psql \
+            -h 127.0.0.1 \
+            -p 5432 \
+            -U commercepilot_admin \
+            -d commercepilot \
+            -f scripts/schema.sql
+
+      - name: Seed CI database
+        env:
+          PGPASSWORD: ci_admin_password
+        run: |
+          psql \
+            -h 127.0.0.1 \
+            -p 5432 \
+            -U commercepilot_admin \
+            -d commercepilot \
+            -f scripts/ci_seed.sql
+
       - name: Run Python tests
+        env:
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: commercepilot
+          POSTGRES_READONLY_USER: commercepilot_reader
+          POSTGRES_READONLY_PASSWORD: ci_reader_password
+          GROQ_MODEL: openai/gpt-oss-20b
         run: python -m pytest
 
 
