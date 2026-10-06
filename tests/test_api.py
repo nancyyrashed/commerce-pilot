@@ -1,10 +1,31 @@
 from fastapi.testclient import TestClient
 
+import src.public_demo as public_demo
 from src.api import app
+from src.api_models import AskResponse
 from src.response_models import AgentResponse
 
 
 client = TestClient(app)
+
+
+def setup_function():
+    """
+    Start every API test with empty public-demo state.
+
+    This prevents cached answers and rate-limit history from one
+    test affecting another test.
+    """
+
+    public_demo.clear_public_demo_state()
+
+
+def teardown_function():
+    """
+    Clear public-demo state after every API test.
+    """
+
+    public_demo.clear_public_demo_state()
 
 
 def test_health_check():
@@ -121,6 +142,200 @@ def test_ask_returns_agent_response(
     assert data["duration_ms"] >= 0
 
 
+def test_ask_uses_cached_response_without_running_agent(
+    monkeypatch,
+):
+    """
+    A cache hit should return the cached answer without calling
+    the CommercePilot agent again.
+    """
+
+    cached_response = AskResponse(
+        answer="There are 99,441 orders.",
+        sql=(
+            "SELECT COUNT(*) AS total_orders "
+            "FROM orders LIMIT 100"
+        ),
+        tables_used=[
+            "orders",
+        ],
+        attempts=1,
+        row_count=1,
+        success=True,
+        error=None,
+        duration_ms=5000.0,
+    )
+
+    monkeypatch.setattr(
+        "src.api.get_cached_answer",
+        lambda _question: cached_response,
+    )
+
+    def fake_run_agent(_question):
+        raise AssertionError(
+            "run_agent() should not be called "
+            "when the response is cached."
+        )
+
+    monkeypatch.setattr(
+        "src.api.run_agent",
+        fake_run_agent,
+    )
+
+    response = client.post(
+        "/api/ask",
+        json={
+            "question": (
+                "How many orders are in the dataset?"
+            ),
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["answer"] == (
+        "There are 99,441 orders."
+    )
+
+    assert data["success"] is True
+
+    # The API should replace the old cached duration with the
+    # timing for this current cache-hit request.
+    assert data["duration_ms"] >= 0
+    assert data["duration_ms"] != 5000.0
+
+
+def test_ask_caches_successful_response(
+    monkeypatch,
+):
+    """
+    A successful CommercePilot result should be stored in the
+    answer cache for future identical questions.
+    """
+
+    question = (
+        "How many orders are in the dataset?"
+    )
+
+    def fake_run_agent(_question):
+        return AgentResponse(
+            answer="There are 99,441 orders.",
+            sql=(
+                "SELECT COUNT(*) AS total_orders "
+                "FROM orders LIMIT 100"
+            ),
+            tables_used=[
+                "orders",
+            ],
+            attempts=1,
+            row_count=1,
+            success=True,
+            error=None,
+        )
+
+    cached_calls = []
+
+    def fake_cache_answer(
+        cached_question,
+        cached_response,
+    ):
+        cached_calls.append(
+            (
+                cached_question,
+                cached_response,
+            )
+        )
+
+    monkeypatch.setattr(
+        "src.api.run_agent",
+        fake_run_agent,
+    )
+
+    monkeypatch.setattr(
+        "src.api.cache_answer",
+        fake_cache_answer,
+    )
+
+    response = client.post(
+        "/api/ask",
+        json={
+            "question": question,
+        },
+    )
+
+    assert response.status_code == 200
+
+    assert len(cached_calls) == 1
+
+    cached_question, cached_response = (
+        cached_calls[0]
+    )
+
+    assert cached_question == question
+    assert cached_response.success is True
+    assert cached_response.answer == (
+        "There are 99,441 orders."
+    )
+
+
+def test_ask_returns_429_for_public_demo_rate_limit(
+    monkeypatch,
+):
+    """
+    A client that exceeds the public-demo request limit should
+    receive HTTP 429 before the agent is executed.
+    """
+
+    monkeypatch.setattr(
+        "src.api.check_rate_limit",
+        lambda _client_id: (
+            False,
+            37,
+        ),
+    )
+
+    def fake_run_agent(_question):
+        raise AssertionError(
+            "run_agent() should not be called "
+            "when the client is rate limited."
+        )
+
+    monkeypatch.setattr(
+        "src.api.run_agent",
+        fake_run_agent,
+    )
+
+    response = client.post(
+        "/api/ask",
+        json={
+            "question": (
+                "How many orders are there?"
+            ),
+        },
+        headers={
+            "X-Forwarded-For": (
+                "203.0.113.10"
+            ),
+        },
+    )
+
+    assert response.status_code == 429
+
+    assert response.json() == {
+        "detail": (
+            "Too many requests from this "
+            "client. Please try again shortly."
+        )
+    }
+
+    assert (
+        response.headers["retry-after"]
+        == "37"
+    )
+
+
 def test_ask_returns_429_for_provider_rate_limit(
     monkeypatch,
 ):
@@ -200,7 +415,9 @@ def test_ask_hides_unexpected_internal_error(
     response = client.post(
         "/api/ask",
         json={
-            "question": "How many orders are there?",
+            "question": (
+                "How many orders are there?"
+            ),
         },
     )
 
@@ -228,9 +445,15 @@ def test_cors_allows_local_vite_origin():
     response = client.options(
         "/api/ask",
         headers={
-            "Origin": "http://localhost:5173",
-            "Access-Control-Request-Method": "POST",
-            "Access-Control-Request-Headers": "content-type",
+            "Origin": (
+                "http://localhost:5173"
+            ),
+            "Access-Control-Request-Method": (
+                "POST"
+            ),
+            "Access-Control-Request-Headers": (
+                "content-type"
+            ),
         },
     )
 

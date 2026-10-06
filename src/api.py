@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from time import perf_counter
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -10,6 +10,11 @@ from groq import RateLimitError
 
 from src.agent_service import run_agent
 from src.api_models import AskRequest, AskResponse
+from src.public_demo import (
+    cache_answer,
+    check_rate_limit,
+    get_cached_answer,
+)
 
 
 logger = logging.getLogger(
@@ -85,6 +90,37 @@ if FRONTEND_ASSETS.exists():
     )
 
 
+def get_client_identifier(
+    request: Request,
+) -> str:
+    """
+    Return a stable identifier for the requesting client.
+
+    Production reverse proxies such as Vercel provide the original
+    client address through X-Forwarded-For. Local development falls
+    back to the direct connection address.
+    """
+
+    forwarded_for = request.headers.get(
+        "x-forwarded-for"
+    )
+
+    if forwarded_for:
+        client_ip = (
+            forwarded_for
+            .split(",")[0]
+            .strip()
+        )
+
+        if client_ip:
+            return client_ip
+
+    if request.client is not None:
+        return request.client.host
+
+    return "unknown"
+
+
 @app.get(
     "/health",
     tags=["system"],
@@ -105,10 +141,15 @@ def health_check() -> dict[str, str]:
     tags=["analytics"],
 )
 def ask_commercepilot(
-    request: AskRequest,
+    payload: AskRequest,
+    http_request: Request,
 ) -> AskResponse:
     """
     Process one natural-language analytics request.
+
+    Public-demo safeguards apply a lightweight per-client rate
+    limit and reuse recent successful answers when the same
+    normalized question is asked again.
 
     Provider rate limits are returned as HTTP 429 so the frontend
     can distinguish temporary quota exhaustion from an unexpected
@@ -117,9 +158,80 @@ def ask_commercepilot(
 
     start_time = perf_counter()
 
+    # ---------------------------------------------------------
+    # Public-demo rate limit
+    # ---------------------------------------------------------
+
+    client_id = get_client_identifier(
+        http_request
+    )
+
+    allowed, retry_after = check_rate_limit(
+        client_id
+    )
+
+    if not allowed:
+        logger.warning(
+            (
+                "CommercePilot public-demo rate "
+                "limit reached for client=%s."
+            ),
+            client_id,
+        )
+
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                "Too many requests from this "
+                "client. Please try again shortly."
+            ),
+            headers={
+                "Retry-After": str(
+                    retry_after
+                ),
+            },
+        )
+
+    # ---------------------------------------------------------
+    # Answer cache
+    # ---------------------------------------------------------
+
+    cached_response = get_cached_answer(
+        payload.question
+    )
+
+    if cached_response is not None:
+        duration_ms = (
+            perf_counter() - start_time
+        ) * 1000
+
+        logger.info(
+            (
+                "CommercePilot cache hit: "
+                "client=%s duration_ms=%.2f"
+            ),
+            client_id,
+            duration_ms,
+        )
+
+        # Update the request-duration field so it represents the
+        # current cached request rather than the original request.
+        return cached_response.model_copy(
+            update={
+                "duration_ms": round(
+                    duration_ms,
+                    2,
+                ),
+            }
+        )
+
+    # ---------------------------------------------------------
+    # Agent execution
+    # ---------------------------------------------------------
+
     try:
         agent_result = run_agent(
-            request.question
+            payload.question
         )
 
     except RateLimitError:
@@ -170,6 +282,23 @@ def ask_commercepilot(
         perf_counter() - start_time
     ) * 1000
 
+    response = AskResponse(
+        **agent_result.model_dump(),
+        duration_ms=round(
+            duration_ms,
+            2,
+        ),
+    )
+
+    # Cache only successful agent responses. Failed executions
+    # should be allowed to run again rather than preserving an
+    # error result for the cache lifetime.
+    if response.success:
+        cache_answer(
+            payload.question,
+            response,
+        )
+
     logger.info(
         (
             "CommercePilot request completed: "
@@ -182,13 +311,7 @@ def ask_commercepilot(
         duration_ms,
     )
 
-    return AskResponse(
-        **agent_result.model_dump(),
-        duration_ms=round(
-            duration_ms,
-            2,
-        ),
-    )
+    return response
 
 
 @app.get(
