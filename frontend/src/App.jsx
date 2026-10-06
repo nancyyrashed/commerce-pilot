@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import { askCommercePilot } from "./api";
 import "./App.css";
@@ -506,9 +507,11 @@ function App() {
                   </span>
 
                   <div className="answer-text">
-                    <ReactMarkdown>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                    >
                       {result.answer}
-                    </ReactMarkdown>
+                  </ReactMarkdown>
                   </div>
                 </div>
               </div>
