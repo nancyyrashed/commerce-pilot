@@ -234,9 +234,11 @@ def classify_and_generate_sql_node(
 
     prompt = f"""
 Database schema:
+
 {state["schema_context"]}
 
 User request:
+
 {state["question"]}
 
 Classify the request first.
@@ -321,6 +323,7 @@ def generate_sql_node(
         "sql",
         "",
     )
+
     last_error = state.get(
         "last_error"
     )
@@ -342,9 +345,11 @@ def generate_sql_node(
 The previous SQL attempt failed.
 
 Previous SQL:
+
 {previous_sql}
 
 Error:
+
 {last_error}
 
 Repair the SQL while preserving the user's intended question.
@@ -535,6 +540,94 @@ def _format_scalar_value(
     )
 
 
+def _format_table_value(
+    value,
+) -> str:
+    """
+    Format one database value for a Markdown table.
+
+    Reuse the scalar formatter for readable numeric values and
+    escape characters that could break Markdown table rendering.
+    """
+
+    formatted_value = (
+        _format_scalar_value(
+            value
+        )
+    )
+
+    return (
+        formatted_value
+        .replace("|", r"\|")
+        .replace("\n", "<br>")
+    )
+
+
+def _build_small_result_table(
+    rows: list[dict],
+) -> str:
+    """
+    Build a deterministic Markdown table for a small SQL result.
+
+    Every returned database row is included exactly once, preventing
+    the final-answer LLM from accidentally omitting ranked/list rows.
+    """
+
+    columns = list(
+        rows[0].keys()
+    )
+
+    headers = [
+        _humanize_column_name(
+            column
+        )
+        for column in columns
+    ]
+
+    header_row = (
+        "| "
+        + " | ".join(headers)
+        + " |"
+    )
+
+    separator_row = (
+        "| "
+        + " | ".join(
+            "---"
+            for _ in columns
+        )
+        + " |"
+    )
+
+    data_rows = []
+
+    for row in rows:
+        formatted_values = [
+            _format_table_value(
+                row.get(column)
+            )
+            for column in columns
+        ]
+
+        data_rows.append(
+            "| "
+            + " | ".join(
+                formatted_values
+            )
+            + " |"
+        )
+
+    return "\n".join(
+        [
+            "Here are the results:",
+            "",
+            header_row,
+            separator_row,
+            *data_rows,
+        ]
+    )
+
+
 def simple_result_answer_node(
     state: AgentState,
 ):
@@ -620,21 +713,56 @@ def final_answer_node(
     Simple one-value results can bypass this LLM call through
     simple_result_answer_node.
 
-    Complex results continue to use Groq so they can be summarized
-    naturally and accurately.
+    Small result sets are rendered deterministically so every
+    returned database row is preserved.
+
+    Larger complex results continue to use Groq so they can be
+    summarized naturally and accurately.
     """
 
     start_time = perf_counter()
+
+    rows = state.get(
+        "query_result",
+        [],
+    )
+
+    if not rows:
+        answer = (
+            "No matching rows were found."
+        )
+
+        _print_timing(
+            "final_answer",
+            start_time,
+        )
+
+        return {
+            "answer": answer,
+        }
+
+    if len(rows) <= 10:
+        answer = (
+            _build_small_result_table(
+                rows
+            )
+        )
+
+        _print_timing(
+            "final_answer",
+            start_time,
+        )
+
+        return {
+            "answer": answer,
+        }
 
     llm = get_llm()
 
     # Convert values such as Decimal and datetime into text that can
     # safely be included in the LLM prompt.
     query_result = json.dumps(
-        state.get(
-            "query_result",
-            [],
-        ),
+        rows,
         default=str,
         ensure_ascii=False,
         indent=2,
@@ -642,12 +770,15 @@ def final_answer_node(
 
     prompt = f"""
 User question:
+
 {state["question"]}
 
 Executed SQL:
+
 {state["sql"]}
 
 Database result:
+
 {query_result}
 
 The SQL executed successfully.
