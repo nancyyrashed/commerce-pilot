@@ -345,7 +345,10 @@ Production database access uses a pooled Neon connection string for the restrict
 
 Production credentials are supplied only through environment variables and are never committed to Git.
 
+Continuous deployment is handled by Vercel's GitHub integration: pushes to `main` automatically trigger a new production deployment.
+
 The public-demo answer cache and request limiter are process-local. On Vercel, separate container instances may maintain independent in-memory state, so the limiter is intentionally treated as a lightweight per-instance safeguard rather than a globally distributed rate limiter.
+
 
 ## Repository structure
 
